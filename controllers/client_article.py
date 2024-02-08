@@ -21,12 +21,14 @@ def client_article_show():
     '''
     mycursor.execute(sql)
     jeans = mycursor.fetchall()
+    articles = jeans
 
     # Pour le filtre
-    sql_filtre = '''SELECT DISTINCT nom_coupe FROM coupe_jean'''
+    sql_filtre = '''SELECT DISTINCT nom_coupe FROM coupe_jean
+    order by id_coupe_jean'''
     mycursor.execute(sql_filtre)
     coupe_jean = mycursor.fetchall()
-
+    types_article = coupe_jean
     articles_panier = []
 
     if len(articles_panier) >= 1:
