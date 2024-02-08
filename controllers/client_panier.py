@@ -12,35 +12,27 @@ client_panier = Blueprint('client_panier', __name__,
 @client_panier.route('/client/panier/add', methods=['POST'])
 def client_panier_add():
     mycursor = get_db().cursor()
-    id_client = session['id_user']
-    id_article = request.form.get('id_article')
+    id_client = session['id_utilisateur']
+    id_jean = request.form.get('id_jean')
     quantite = request.form.get('quantite')
-    # ---------
-    #id_declinaison_article=request.form.get('id_declinaison_article',None)
-    id_declinaison_article = 1
+    sql="select * from ligne_panier where id_jean =%s and id_utilisateur =%s"
+    mycursor.execute(sql,(id_jean, id_client))
+    article_panier = mycursor.fetchone()
 
-# ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = '''    '''
-    # mycursor.execute(sql, (id_article))
-    # declinaisons = mycursor.fetchall()
-    # if len(declinaisons) == 1:
-    #     id_declinaison_article = declinaisons[0]['id_declinaison_article']
-    # elif len(declinaisons) == 0:
-    #     abort("pb nb de declinaison")
-    # else:
-    #     sql = '''   '''
-    #     mycursor.execute(sql, (id_article))
-    #     article = mycursor.fetchone()
-    #     return render_template('client/boutique/declinaison_article.html'
-    #                                , declinaisons=declinaisons
-    #                                , quantite=quantite
-    #                                , article=article)
+    mycursor.execute("select * from jean where id_jean =%s",(id_jean))
+    jean = mycursor.fetchone()
 
-# ajout dans le panier d'un article
+    if not (article_panier is None) and article_panier['quantite']>=1:
+        tuple_update =(quantite, id_client, id_jean)
+        sql="update ligne_panier set quantite= quantite +%s where id_utilisateur =%s"
+        mycursor.execute(sql, tuple_update)
+    else:
+        tuple_insert = (id_client, id_jean, quantite)
+        sql="update ligne_panier set quantite = quantite+%s where id_utilisateur=%s"
+        mycursor.execute(sql, tuple_insert)
 
-
-    return redirect('/client/article/show')
-
+    get_db().commit()
+    return redirect ('/client/article/show')
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
     mycursor = get_db().cursor()

@@ -96,6 +96,7 @@ INSERT INTO coupe_jean (id_coupe_jean, nom_coupe) VALUES
    prix_jean DECIMAL(15,3) NOT NULL,
    id_coupe_jean CHAR(50) NOT NULL,
    id_taille CHAR(50) NOT NULL,
+   image VARCHAR(25) NOT NULL,
    PRIMARY KEY(id_jean),
    FOREIGN KEY(id_coupe_jean) REFERENCES coupe_jean(id_coupe_jean),
    FOREIGN KEY(id_taille) REFERENCES taille(id_taille)
